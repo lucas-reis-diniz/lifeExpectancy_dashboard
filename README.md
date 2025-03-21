@@ -12,7 +12,8 @@ Este projeto é um dashboard interativo desenvolvido com Streamlit para explorar
 
 ```
 ├── dataset/               # Arquivos de dados utilizados no projeto
-├── app.py                 # Código principal da aplicação Streamlit
+├── pages/               # Paginas do projeto
+├── 1_Home.py                 # Código principal da aplicação Streamlit
 ├── requirements.txt       # Dependências do projeto
 ├── README.md              # Documentação do projeto
 ```
