@@ -1,4 +1,4 @@
-Life Expectancy Dashboard - Streamlit
+# Life Expectancy Dashboard - Streamlit
 
 Este projeto é um dashboard interativo desenvolvido com Streamlit para explorar dados sobre a expectativa de vida global. O objetivo é fornecer insights visuais e estatísticos sobre fatores que influenciam a longevidade em diferentes países e períodos.
 
