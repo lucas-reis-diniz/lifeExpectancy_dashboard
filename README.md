@@ -5,7 +5,6 @@ Este projeto é um dashboard interativo desenvolvido com Streamlit para explorar
 ## 🚀 Funcionalidades
 
 - 📊 **Visualização de Dados**: Gráficos interativos para análise de expectativa de vida por país, região e ano.
-- 🔍 **Filtros Dinâmicos**: Selecione países, períodos e variáveis específicas para análise personalizada.
 - 📈 **Análises Estatísticas**: Cálculo de tendências e correlações entre expectativa de vida e variáveis socioeconômicas.
 - 🌍 **Mapa Interativo**: Representação geográfica da expectativa de vida global.
 
@@ -24,10 +23,10 @@ O projeto utiliza um conjunto de dados sobre expectativa de vida global, contend
 
 - País
 - Ano
-- Expectativa de vida
-- PIB per capita
+- Status
+- BMI
 - Taxa de mortalidade
-- Índices de saúde e educação
+- Doenças
 
 ## 🛠 Tecnologias Utilizadas
 
@@ -63,9 +62,3 @@ Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICEN
 ---
 
 ✉️ Caso tenha dúvidas ou sugestões, sinta-se à vontade para entrar em contato!
-
-me o codigo em markdown
-
-
-
-me
