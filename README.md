@@ -2,66 +2,70 @@
 
 Este projeto é um dashboard interativo desenvolvido com Streamlit para explorar dados sobre a expectativa de vida global. O objetivo é fornecer insights visuais e estatísticos sobre fatores que influenciam a longevidade em diferentes países e períodos.
 
-🚀 Funcionalidades:
+## 🚀 Funcionalidades
 
-  📊 Visualização de Dados: Gráficos interativos para análise de expectativa de vida por país, região e ano.
-  
-  📈 Análises Estatísticas: Cálculo de tendências e correlações entre expectativa de vida e variáveis socioeconômicas.
-  
-  🌍 Mapa Interativo: Representação geográfica da expectativa de vida global.
+- 📊 **Visualização de Dados**: Gráficos interativos para análise de expectativa de vida por país, região e ano.
+- 🔍 **Filtros Dinâmicos**: Selecione países, períodos e variáveis específicas para análise personalizada.
+- 📈 **Análises Estatísticas**: Cálculo de tendências e correlações entre expectativa de vida e variáveis socioeconômicas.
+- 🌍 **Mapa Interativo**: Representação geográfica da expectativa de vida global.
 
-📂 Estrutura do Projeto
+## 📂 Estrutura do Projeto
 
+```
 ├── dataset/               # Arquivos de dados utilizados no projeto
-├── pages/               # Paginas do Projeto
-├── 1_Home.py                 # Código principal da aplicação Streamlit
+├── app.py                 # Código principal da aplicação Streamlit
 ├── requirements.txt       # Dependências do projeto
 ├── README.md              # Documentação do projeto
+```
 
-📊 Dataset
+## 📊 Dataset
 
 O projeto utiliza um conjunto de dados sobre expectativa de vida global, contendo informações como:
 
-País
+- País
+- Ano
+- Expectativa de vida
+- PIB per capita
+- Taxa de mortalidade
+- Índices de saúde e educação
 
-Expectativa de vida
+## 🛠 Tecnologias Utilizadas
 
-Status
+- Python
+- Streamlit
+- Pandas
+- Matplotlib / Seaborn
+- Plotly
 
-Taxa de mortalidade
+## 📌 Como Executar o Projeto
 
-Doenças
+1. Clone este repositório:
+   ```sh
+   git clone https://github.com/seu-usuario/life-expectancy-dashboard.git
+   ```
+2. Navegue até o diretório do projeto:
+   ```sh
+   cd life-expectancy-dashboard
+   ```
+3. Instale as dependências:
+   ```sh
+   pip install -r requirements.txt
+   ```
+4. Execute a aplicação:
+   ```sh
+   streamlit run app.py
+   ```
 
-🛠 Tecnologias Utilizadas
+## 📄 Licença
 
-Python
+Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-Streamlit
+---
 
-Pandas
+✉️ Caso tenha dúvidas ou sugestões, sinta-se à vontade para entrar em contato!
 
-Matplotlib / Seaborn
+me o codigo em markdown
 
-Plotly
 
-📌 Como Executar o Projeto
 
-Clone este repositório:
-
-git clone https://github.com/seu-usuario/life-expectancy-dashboard.git
-
-Navegue até o diretório do projeto:
-
-cd life-expectancy-dashboard
-
-Instale as dependências:
-
-pip install -r requirements.txt
-
-Execute a aplicação:
-
-streamlit run app.py
-
-📄 Licença
-
-Este projeto está licenciado sob a MIT License - veja o arquivo LICENSE para mais detalhes.
+me
