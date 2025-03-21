@@ -53,7 +53,7 @@ O projeto utiliza um conjunto de dados sobre expectativa de vida global, contend
    ```
 4. Execute a aplicação:
    ```sh
-   streamlit run app.py
+   streamlit run 1_Home.py
    ```
 
 ## 📄 Licença
