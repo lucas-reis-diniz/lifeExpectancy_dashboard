@@ -45,7 +45,7 @@ O projeto utiliza um conjunto de dados sobre expectativa de vida global, contend
    ```
 2. Navegue até o diretório do projeto:
    ```sh
-   cd life-expectancy-dashboard
+   cd lifeExpectancy-dashboard
    ```
 3. Instale as dependências:
    ```sh
