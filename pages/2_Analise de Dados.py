@@ -73,35 +73,76 @@ fig = px.line(df_country, x="Year", y="Life expectancy", markers=True,
               labels={"Life expectancy": "Expectativa de Vida", "Year": "Anos"})
 st.plotly_chart(fig)
 
-# Mapa Coroplético para visualizar doenças por região
-st.subheader("Distribuição de Doenças por Região")
+options = st.multiselect(
+    "Escolha as análises que deseja visualizar:",
+    ["Distribuição da Expectativa de Vida",
+     "Expectativa de Vida por País",
+     "Doenças por Região",
+     "Correlação entre PIB e Expectativa de Vida",
+     "Impacto da Vacinação na Expectativa de Vida"]
+)
 
-# Filtros para escolher a doença
-disease_options = [
-    "Hepatitis B", "Measles", "Polio", "Diphtheria", "HIV/AIDS", "infant deaths", "Under-five deaths"
-]
-disease = st.selectbox("Selecione uma doença para visualizar:", disease_options)
-
-# Preprocessamento para evitar erros no mapa
-df = df.dropna(subset=["Country", disease])  # Remove valores nulos na coluna de país e da doença selecionada
-df["Country"] = df["Country"].astype(str)  # Garante que a coluna "Country" seja string
-
-# Lista de países reconhecidos pelo Plotly
-valid_countries = px.data.gapminder()["country"].unique()
-df = df[df["Country"].isin(valid_countries)]  # Mantém apenas países válidos
-
-if df.empty:
-    st.warning("Nenhum dado válido para exibir no mapa. Verifique os filtros aplicados.")
-else:
-    # Criando o mapa
-    fig = px.choropleth(
-        df,
-        locations="Country",
-        locationmode="country names",
-        color=disease,
-        hover_name="Country",
-        animation_frame="Year",
-        color_continuous_scale="Reds",
-        title=f"Distribuição de {disease} ao longo dos anos"
-    )
+if "Distribuição da Expectativa de Vida" in options:
+    st.subheader("Distribuição da Expectativa de Vida")
+    fig = px.histogram(df, x="Life expectancy", nbins=30, title="Histograma da Expectativa de Vida",
+                       labels={"Life expectancy": "Expectativa de Vida"}, opacity=0.7, marginal="box")
     st.plotly_chart(fig)
+
+if "Expectativa de Vida por País" in options:
+    st.subheader("Expectativa de Vida por País")
+    country = st.selectbox("Selecione um país:", df["Country"].unique())
+    df_country = df[df["Country"] == country]
+    fig = px.line(df_country, x="Year", y="Life expectancy", markers=True,
+                  title=f"Expectativa de Vida ao Longo dos Anos em {country}",
+                  labels={"Life expectancy": "Expectativa de Vida", "Year": "Ano"})
+    st.plotly_chart(fig)
+
+if "Doenças por Região" in options:
+    # Mapa Coroplético para visualizar doenças por região
+    st.subheader("Distribuição de Doenças por Região")
+
+    # Filtros para escolher a doença
+    disease_options = [
+        "Hepatitis B", "Measles", "Polio", "Diphtheria", "HIV/AIDS", "infant deaths", "Under-five deaths"
+    ]
+    disease = st.selectbox("Selecione uma doença para visualizar:", disease_options)
+
+    # Preprocessamento para evitar erros no mapa
+    df = df.dropna(subset=["Country", disease])  # Remove valores nulos na coluna de país e da doença selecionada
+    df["Country"] = df["Country"].astype(str)  # Garante que a coluna "Country" seja string
+
+    # Lista de países reconhecidos pelo Plotly
+    valid_countries = px.data.gapminder()["country"].unique()
+    df = df[df["Country"].isin(valid_countries)]  # Mantém apenas países válidos
+
+    if df.empty:
+        st.warning("Nenhum dado válido para exibir no mapa. Verifique os filtros aplicados.")
+    else:
+        # Criando o mapa
+        fig = px.choropleth(
+            df,
+            locations="Country",
+            locationmode="country names",
+            color=disease,
+            hover_name="Country",
+            animation_frame="Year",
+            color_continuous_scale="Reds",
+            title=f"Distribuição de {disease} ao longo dos anos"
+        )
+        st.plotly_chart(fig)
+
+if "Correlação entre PIB e Expectativa de Vida" in options:
+    st.subheader("Correlação entre PIB e Expectativa de Vida")
+    fig = px.scatter(df, x="GDP", y="Life expectancy", trendline="ols",
+                     title="Relação entre PIB e Expectativa de Vida",
+                     labels={"GDP": "PIB", "Life expectancy": "Expectativa de Vida"})
+    st.plotly_chart(fig)
+
+if "Impacto da Vacinação na Expectativa de Vida" in options:
+    st.subheader("Impacto da Vacinação na Expectativa de Vida")
+    vaccine = st.selectbox("Selecione uma vacina:", ["Hepatitis B", "Polio", "Diphtheria"])
+    fig = px.scatter(df, x=vaccine, y="Life expectancy", trendline="ols",
+                     title=f"Relação entre {vaccine} e Expectativa de Vida",
+                     labels={vaccine: "Taxa de Vacinação (%)", "Life expectancy": "Expectativa de Vida"})
+    st.plotly_chart(fig)
+
