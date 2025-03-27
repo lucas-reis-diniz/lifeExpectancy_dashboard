@@ -4,8 +4,11 @@ import openai
 import os
 import time
 
-# 🔥 Carregar Variáveis de Ambiente
-api_key = st.secrets["OPENROUTER_API_KEY"]
+api_key = st.secrets.get("OPENROUTER_API_KEY", None)
+
+if not api_key:
+    st.error("❌ Erro: Chave da API não encontrada! Configure-a no Streamlit Secrets.")
+    st.stop()  # Interrompe a execução do app
 
 # Configuração do OpenAI para OpenRouter
 client = openai.OpenAI(
