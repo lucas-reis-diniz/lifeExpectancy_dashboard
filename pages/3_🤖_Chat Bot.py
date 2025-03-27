@@ -6,7 +6,7 @@ import time
 from dotenv import load_dotenv
 
 # 🔥 Carregar Variáveis de Ambiente
-api_key = st.secrets["OPENAI_API_KEY"]
+api_key = st.secrets["OPENROUTER_API_KEY"]
 
 # Configuração do OpenAI para OpenRouter
 client = openai.OpenAI(
