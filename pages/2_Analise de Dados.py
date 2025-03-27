@@ -73,7 +73,7 @@ if "Expectativa de Vida por País" in options:
 
 if "Doenças por Região" in options:
     st.subheader("Doenças por Região")
-    disease = st.selectbox("Selecione uma doença:", ["Measles", "Hepatitis B", "Polio", "Diphtheria", "HIV/AIDS"])
+    disease = st.selectbox("Selecione uma doença:", [" Measles", "Hepatitis B", "Polio", " Diphtheria", " HIV/AIDS"])
     fig = px.choropleth(df, locations="Country", locationmode="country names",
                         color=disease, hover_name="Country",
                         animation_frame="Year",
