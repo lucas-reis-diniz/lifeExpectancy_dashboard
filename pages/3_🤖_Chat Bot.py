@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 import openai
+from dotenv import load_dotenv
 import os
 import time
 
-api_key = st.secrets.get("OPENROUTER_API_KEY", None)
+load_dotenv()
+api_key = os.getenv("OPENROUTER_API_KEY")
+
 
 if not api_key:
     st.error("❌ Erro: Chave da API não encontrada! Configure-a no Streamlit Secrets.")
@@ -33,6 +36,7 @@ def get_data_response(question):
 
     # Exemplo: verificar se a pergunta contém palavras-chave
     if "expectativa de vida média" in question_lower:
+        st.write("Teste")
         avg_life_expectancy = df["Life expectancy"].mean()
         return f"A expectativa de vida média global no dataset é **{avg_life_expectancy:.2f} anos**."
 
@@ -41,6 +45,7 @@ def get_data_response(question):
             if country.lower() in question_lower:
                 country_life_expectancy = df[df["Country"] == country]["Life expectancy"].mean()
                 return f"A expectativa de vida média em **{country}** é **{country_life_expectancy:.2f} anos**."
+
 
     elif "país com maior expectativa de vida" in question_lower:
         max_country = df.loc[df["Life expectancy"].idxmax()]["Country"]
