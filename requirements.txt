@@ -9,3 +9,10 @@ plotnine
 seaborn
 matplotlib
 llama-cpp-python
+python-dotenv
+requests
+tqdm
+openai
+scikit-learn
+pydantic
+wheel
