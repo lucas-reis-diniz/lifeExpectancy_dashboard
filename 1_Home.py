@@ -4,6 +4,25 @@ st.set_page_config(page_title="Dashboard Expectativa de Vida por Região", layou
 
 st.title("Dashboard Expectativa de Vida por Região")
 
-st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec semper nulla libero, eu consequat metus hendrerit vitae. Fusce sed ex mattis lacus ornare euismod sed eget ligula. Proin convallis, lorem ac laoreet eleifend, augue risus dapibus elit, ut imperdiet libero neque id arcu. Etiam non lorem ante. Sed a ornare nibh, vestibulum ultricies enim. Curabitur in justo sit amet nisi iaculis lacinia. Quisque in neque ac sapien egestas pharetra. Integer vel felis maximus, facilisis orci quis, gravida lectus. Duis sodales dui diam, eu gravida orci cursus sit amet. In blandit, ex vitae convallis accumsan, nunc nunc vulputate magna, eu convallis nulla nisl a urna. In ut diam ut nunc tempor tristique.")
+st.write("Este dashboard foi desenvolvido para explorar e analisar dados relacionados à expectativa de vida em diferentes países ao longo dos anos. Aqui, você poderá visualizar tendências, comparar fatores que influenciam a longevidade e entender a relação entre variáveis como mortalidade infantil, vacinação, PIB e outros indicadores socioeconômicos.")
 
 st.image("global-life-expectancy.jpg")
+
+st.subheader("O que você encontrará?")
+
+st.write("✅ Estatísticas descritivas sobre os dados")
+st.write("✅ Comparação de indicadores entre países")
+st.write("✅ Análises gráficas e interativas")
+st.write("✅ Distribuição de doenças e seu impacto na expectativa de vida")
+
+st.subheader("Conclusões e Insights")
+
+st.write("A análise dos dados de expectativa de vida nos permite tirar diversas conclusões sobre os fatores que impactam diretamente a longevidade das populações.")
+
+st.write("- Países desenvolvidos apresentam, em geral, uma expectativa de vida significativamente maior do que países em desenvolvimento. Isso pode estar ligado a melhores condições de saneamento, acesso à saúde e padrões de vida mais elevados.")
+
+st.write("- Vacinas como Hepatite B, Poliomielite e Difteria mostram uma forte correlação com o aumento da expectativa de vida. Regiões com baixa cobertura vacinal tendem a apresentar maior mortalidade infantil e menor longevidade.")
+
+st.subheader("💡 Conclusão Final")
+
+st.write("A expectativa de vida é um reflexo de múltiplos fatores, como acesso à saúde, educação, vacinação e condições socioeconômicas. Melhorar esses indicadores pode ter um impacto significativo na longevidade e qualidade de vida das populações.")
