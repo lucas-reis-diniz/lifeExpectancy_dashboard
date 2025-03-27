@@ -1,5 +1,8 @@
 import streamlit as st
 
+#https://github.com/dataprofessor/llama2/blob/master/streamlit_app_v2.py
+# Codigo que utiliza o OLLama
+
 st.set_page_config(page_title="Chat Bot", layout="wide")
 
 st.title("Chat Bot")
