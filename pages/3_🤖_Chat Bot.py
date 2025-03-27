@@ -32,15 +32,12 @@ def ask_ai(question):
         return f"Erro na API: {str(e)}"
 
 
-# Layout do chat
 st.title("🤖 Chatbot de Expectativa de Vida")
 
-# Exibe mensagens do histórico
 for message in st.session_state["messages"]:
     with st.chat_message(message["role"], avatar=message["avatar"]):
         st.markdown(message["content"])
 
-# Caixa de entrada do usuário
 question = st.chat_input("Digite sua pergunta...")
 
 if question:
@@ -58,9 +55,8 @@ if question:
             typing_placeholder.markdown(f"🤖 Digitando{dots}")
             time.sleep(0.5)  # Aguarda meio segundo entre os passos
 
-        # Obter resposta da IA
         response = ask_ai(question)
-        typing_placeholder.markdown(response)  # Substituir animação pela resposta final
+        typing_placeholder.markdown(response)
 
     # Salvar resposta no histórico
     st.session_state["messages"].append({"role": "assistant", "avatar": "🤖", "content": response})

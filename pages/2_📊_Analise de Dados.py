@@ -83,27 +83,22 @@ options = st.multiselect(
 )
 
 if "Doenças por Região" in options:
-    # Mapa Coroplético para visualizar doenças por região
     st.subheader("Distribuição de Doenças por Região")
 
-    # Filtros para escolher a doença
     disease_options = [
         "Hepatitis B", "Measles", "Polio", "Diphtheria", "HIV/AIDS", "infant deaths", "Under-five deaths"
     ]
     disease = st.selectbox("Selecione uma doença para visualizar:", disease_options)
 
-    # Preprocessamento para evitar erros no mapa
     df = df.dropna(subset=["Country", disease])  # Remove valores nulos na coluna de país e da doença selecionada
     df["Country"] = df["Country"].astype(str)  # Garante que a coluna "Country" seja string
 
-    # Lista de países reconhecidos pelo Plotly
     valid_countries = px.data.gapminder()["country"].unique()
     df = df[df["Country"].isin(valid_countries)]  # Mantém apenas países válidos
 
     if df.empty:
         st.warning("Nenhum dado válido para exibir no mapa. Verifique os filtros aplicados.")
     else:
-        # Criando o mapa
         fig = px.choropleth(
             df,
             locations="Country",
