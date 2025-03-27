@@ -8,3 +8,4 @@ streamlit-extras
 plotnine
 seaborn
 matplotlib
+llama-cpp-python

@@ -1,88 +1,75 @@
 import streamlit as st
+import pandas as pd
+import openai
+import os
+import time
+from dotenv import load_dotenv
 
-#https://github.com/dataprofessor/llama2/blob/master/streamlit_app_v2.py
-# Codigo que utiliza o OLLama
+# 🔥 Carregar Variáveis de Ambiente
+load_dotenv()
+API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-st.set_page_config(page_title="Chat Bot", layout="wide")
+# Configuração do OpenAI para OpenRouter
+client = openai.OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=API_KEY,
+)
 
-st.title("Chat Bot")
+# Inicializa histórico de mensagens no session_state
+if "messages" not in st.session_state:
+    st.session_state["messages"] = []
 
-# Codigo para utilizar O Llama no codigo
 
-st.set_page_config(page_title="🦙💬 Llama 2 Chatbot")
+# Função para IA responder perguntas
+def ask_ai(question):
+    try:
+        response = client.chat.completions.create(
+            model="deepseek/deepseek-chat-v3-0324:free",
+            messages=[{"role": "user", "content": question}]
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"Erro na API: {str(e)}"
 
-# Replicate Credentials
-with st.sidebar:
-    st.title('🦙💬 Llama 2 Chatbot')
-    if 'REPLICATE_API_TOKEN' in st.secrets:
-        st.success('API key already provided!', icon='✅')
-        replicate_api = st.secrets['REPLICATE_API_TOKEN']
-    else:
-        replicate_api = st.text_input('Enter Replicate API token:', type='password')
-        if not (replicate_api.startswith('r8_') and len(replicate_api)==40):
-            st.warning('Please enter your credentials!', icon='⚠️')
-        else:
-            st.success('Proceed to entering your prompt message!', icon='👉')
 
-    # Refactored from https://github.com/a16z-infra/llama2-chatbot
-    st.subheader('Models and parameters')
-    selected_model = st.sidebar.selectbox('Choose a Llama2 model', ['Llama2-7B', 'Llama2-13B', 'Llama2-70B'], key='selected_model')
-    if selected_model == 'Llama2-7B':
-        llm = 'a16z-infra/llama7b-v2-chat:4f0a4744c7295c024a1de15e1a63c880d3da035fa1f49bfd344fe076074c8eea'
-    elif selected_model == 'Llama2-13B':
-        llm = 'a16z-infra/llama13b-v2-chat:df7690f1994d94e96ad9d568eac121aecf50684a0b0963b25a41cc40061269e5'
-    else:
-        llm = 'replicate/llama70b-v2-chat:e951f18578850b652510200860fc4ea62b3b16fac280f83ff32282f87bbd2e48'
-    
-    temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=5.0, value=0.1, step=0.01)
-    top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
-    max_length = st.sidebar.slider('max_length', min_value=64, max_value=4096, value=512, step=8)
-    
-    st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
-os.environ['REPLICATE_API_TOKEN'] = replicate_api
+# Layout do chat
+st.title("🤖 Chatbot de Expectativa de Vida")
 
-# Store LLM generated responses
-if "messages" not in st.session_state.keys():
-    st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
+# Exibe mensagens do histórico
+for message in st.session_state["messages"]:
+    with st.chat_message(message["role"], avatar=message["avatar"]):
+        st.markdown(message["content"])
 
-# Display or clear chat messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.write(message["content"])
+# Caixa de entrada do usuário
+question = st.chat_input("Digite sua pergunta...")
 
-def clear_chat_history():
-    st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
-st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
+if question:
+    # Exibir mensagem do usuário
+    st.session_state["messages"].append({"role": "user", "avatar": "👤", "content": question})
+    with st.chat_message("user", avatar="👤"):
+        st.markdown(question)
 
-# Function for generating LLaMA2 response
-def generate_llama2_response(prompt_input):
-    string_dialogue = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as 'Assistant'."
-    for dict_message in st.session_state.messages:
-        if dict_message["role"] == "user":
-            string_dialogue += "User: " + dict_message["content"] + "\n\n"
-        else:
-            string_dialogue += "Assistant: " + dict_message["content"] + "\n\n"
-    output = replicate.run(llm, 
-                           input={"prompt": f"{string_dialogue} {prompt_input} Assistant: ",
-                                  "temperature":temperature, "top_p":top_p, "max_length":max_length, "repetition_penalty":1})
-    return output
+    # Criar espaço para animação de "digitando..."
+    with st.chat_message("assistant", avatar="🤖"):
+        typing_placeholder = st.empty()
 
-# User-provided prompt
-if prompt := st.chat_input(disabled=not replicate_api):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.write(prompt)
+        # Animação de "digitando..." 🤖💬
+        for dots in ["", ".", "..", "..."]:
+            typing_placeholder.markdown(f"🤖 Digitando{dots}")
+            time.sleep(0.5)  # Aguarda meio segundo entre os passos
 
-# Generate a new response if last message is not from assistant
-if st.session_state.messages[-1]["role"] != "assistant":
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            response = generate_llama2_response(prompt)
-            placeholder = st.empty()
-            full_response = ''
-            for item in response:
-                full_response += item
-                placeholder.markdown(full_response)
-            placeholder.markdown(full_response)
-    message = {"role": "assistant", "content": full_response}
-    st.session_state.messages.append(message)
+        # Obter resposta da IA
+        response = ask_ai(question)
+        typing_placeholder.markdown(response)  # Substituir animação pela resposta final
+
+    # Salvar resposta no histórico
+    st.session_state["messages"].append({"role": "assistant", "avatar": "🤖", "content": response})
+
+
+# Carregar os dados (opcional)
+@st.cache_data
+def load_data():
+    return pd.read_csv("LifeExpectancy.csv")
+
+
+df = load_data()
