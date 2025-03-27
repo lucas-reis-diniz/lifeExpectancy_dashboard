@@ -86,7 +86,7 @@ if "Doenças por Região" in options:
     st.subheader("Distribuição de Doenças por Região")
 
     disease_options = [
-        "Hepatitis B", " Measles", "Polio", " Diphtheria", " HIV/AIDS", "infant deaths", " Under-five deaths"
+        "Hepatitis B", "Measles ", "Polio", "Diphtheria ", " HIV/AIDS", "infant deaths", "Under-five deaths "
     ]
     disease = st.selectbox("Selecione uma doença para visualizar:", disease_options)
 
