@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from scipy.stats import t
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="Análise dos Dados", layout="wide")
 
@@ -27,8 +29,29 @@ def load_data():
 
 df = load_data()
 
-st.subheader("Estatísticas Descritivas")
+t.subheader("📊 Estatísticas Descritivas")
+
+st.markdown("""
+Aqui temos um **resumo estatístico das variáveis numéricas** do dataset.  
+Essa tabela nos mostra medidas importantes, como:  
+
+- **Média**: Valor médio da expectativa de vida e outras variáveis.  
+- **Desvio Padrão**: Indica o quão dispersos os dados estão em relação à média.  
+- **Mínimo e Máximo**: Valores extremos observados no dataset.  
+- **Quartis (25%, 50%, 75%)**: Dividem os dados em percentis, ajudando a entender a distribuição.  
+""")
+
 st.write(df.describe())
+
+st.markdown("""
+📌 **Principais observações:**  
+- A **média da expectativa de vida** é aproximadamente **X anos** (*substituir pelo valor real*).  
+- O **desvio padrão** mostra que os dados variam consideravelmente entre países.  
+- O **percentil 25%** indica que **25% dos países têm uma expectativa de vida abaixo de Y anos**.  
+- O **percentil 75%** mostra que **os 25% com maior expectativa de vida estão acima de Z anos**.  
+
+Essas estatísticas nos ajudam a compreender **a dispersão dos dados e padrões gerais**, o que será útil para as próximas análises.  
+""")
 
 st.subheader("Classificação das Variáveis")
 
@@ -140,3 +163,40 @@ if "Impacto da Vacinação na Expectativa de Vida" in options:
                      labels={vaccine: "Taxa de Vacinação (%)", "Life expectancy": "Expectativa de Vida"})
     st.plotly_chart(fig)
 
+st.subheader("📏 Intervalo de Confiança para Expectativa de Vida")
+
+st.markdown("""
+Os **intervalos de confiança** são usados para estimar um intervalo dentro do qual acreditamos que a **média real** da expectativa de vida se encontra.  
+
+Isso nos ajuda a entender **a variação dos dados ao longo dos anos** e a fazer previsões mais seguras.  
+
+Neste caso, utilizamos um **intervalo de confiança de 95%**, ou seja, há **95% de chance da média real da expectativa de vida estar dentro desse intervalo**.  
+""")
+
+confidence_df = df.groupby("Year")["Life expectancy"].agg(["mean", "count", "std"]).reset_index()
+
+confidence_df["sem"] = confidence_df["std"] / confidence_df["count"]**0.5
+
+confidence_df["df"] = confidence_df["count"] - 1
+
+confidence_df["lower"], confidence_df["upper"] = zip(*confidence_df.apply(
+    lambda row: t.interval(0.95, row["df"], loc=row["mean"], scale=row["sem"]), axis=1))
+
+fig = go.Figure()
+
+# Linha da média
+fig.add_trace(go.Scatter(x=confidence_df["Year"], y=confidence_df["mean"],
+                         mode="lines", name="Média", line=dict(color="blue")))
+
+# Faixa do intervalo de confiança
+fig.add_trace(go.Scatter(x=confidence_df["Year"], y=confidence_df["upper"],
+                         mode="lines", name="Limite Superior", line=dict(color="lightblue"), fill="tonexty"))
+fig.add_trace(go.Scatter(x=confidence_df["Year"], y=confidence_df["lower"],
+                         mode="lines", name="Limite Inferior", line=dict(color="lightblue"), fill="tonexty"))
+
+# Configuração do gráfico
+fig.update_layout(title="📊 Intervalo de Confiança (95%) da Expectativa de Vida",
+                  xaxis_title="Ano", yaxis_title="Expectativa de Vida",
+                  showlegend=True)
+
+st.plotly_chart(fig)
