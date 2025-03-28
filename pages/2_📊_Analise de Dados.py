@@ -6,6 +6,20 @@ st.set_page_config(page_title="Análise dos Dados", layout="wide")
 
 st.title("Análise dos Dados")
 
+st.markdown("""
+### 🏥 Sobre este Projeto  
+Este projeto analisa a **expectativa de vida mundial** ao longo dos anos, explorando como diferentes fatores impactam a longevidade em diversas regiões.  
+
+📌 **Por que escolhemos este dataset?**  
+- A expectativa de vida é um **indicador chave do desenvolvimento humano**.  
+- Permite **comparar países e analisar tendências ao longo do tempo**.  
+- Podemos investigar **o impacto de fatores como saúde, economia e políticas públicas**.  
+
+📌 **Impacto desta análise**  
+- Compreender padrões globais pode ajudar governos e ONGs a **tomar decisões baseadas em dados**.  
+- Pode revelar **desigualdades regionais e fatores que contribuem para maior longevidade**.  
+""")
+
 @st.cache_data
 def load_data():
     df = pd.read_csv("LifeExpectancy.csv")
