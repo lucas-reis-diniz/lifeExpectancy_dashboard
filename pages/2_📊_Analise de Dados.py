@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 from scipy.stats import stats
-from scipy.stats import t
+from scipy.stats import norm, t
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
@@ -187,7 +187,7 @@ sem = std_life / np.sqrt(n)  # Erro padrão da média
 confidence_interval = t.interval(0.95, df=n-1, loc=mean_life, scale=sem)
 
 x = np.linspace(mean_life - 4*std_life, mean_life + 4*std_life, 1000)
-y = stats.norm.pdf(x, mean_life, std_life)
+y = norm.pdf(x, mean_life, std_life)
 
 fig, ax = plt.subplots(figsize=(8, 5))
 ax.plot(x, y, color="black", linewidth=2, label="Distribuição Normal")
