@@ -29,7 +29,7 @@ def load_data():
 
 df = load_data()
 
-t.subheader("📊 Estatísticas Descritivas")
+st.subheader("📊 Estatísticas Descritivas")
 
 st.markdown("""
 Aqui temos um **resumo estatístico das variáveis numéricas** do dataset.  
