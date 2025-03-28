@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from scipy.stats import t
+import numpy as np
+from scipy.stats import stats
+import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 st.set_page_config(page_title="Análise dos Dados", layout="wide")
@@ -173,30 +175,38 @@ Isso nos ajuda a entender **a variação dos dados ao longo dos anos** e a fazer
 Neste caso, utilizamos um **intervalo de confiança de 95%**, ou seja, há **95% de chance da média real da expectativa de vida estar dentro desse intervalo**.  
 """)
 
-confidence_df = df.groupby("Year")["Life expectancy"].agg(["mean", "count", "std"]).reset_index()
+life_expectancy = df["Life expectancy"].dropna()  # Removendo valores NaN
 
-confidence_df["sem"] = confidence_df["std"] / confidence_df["count"]**0.5
+# Calcular média e desvio padrão
+mean_life = np.mean(life_expectancy)
+std_life = np.std(life_expectancy, ddof=1)  # ddof=1 para amostra
 
-confidence_df["df"] = confidence_df["count"] - 1
+n = len(life_expectancy)
+sem = std_life / np.sqrt(n)  # Erro padrão da média
+confidence_interval = stats.t.interval(0.95, df=n-1, loc=mean_life, scale=sem)
 
-confidence_df["lower"], confidence_df["upper"] = zip(*confidence_df.apply(
-    lambda row: t.interval(0.95, row["df"], loc=row["mean"], scale=row["sem"]), axis=1))
+x = np.linspace(mean_life - 4*std_life, mean_life + 4*std_life, 1000)
+y = stats.norm.pdf(x, mean_life, std_life)
 
-fig = go.Figure()
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.plot(x, y, color="black", linewidth=2, label="Distribuição Normal")
 
-# Linha da média
-fig.add_trace(go.Scatter(x=confidence_df["Year"], y=confidence_df["mean"],
-                         mode="lines", name="Média", line=dict(color="blue")))
+x_confidence = np.linspace(confidence_interval[0], confidence_interval[1], 300)
+y_confidence = stats.norm.pdf(x_confidence, mean_life, std_life)
+ax.fill_between(x_confidence, y_confidence, color="blue", alpha=0.4, label="95% IC")
 
-# Faixa do intervalo de confiança
-fig.add_trace(go.Scatter(x=confidence_df["Year"], y=confidence_df["upper"],
-                         mode="lines", name="Limite Superior", line=dict(color="lightblue"), fill="tonexty"))
-fig.add_trace(go.Scatter(x=confidence_df["Year"], y=confidence_df["lower"],
-                         mode="lines", name="Limite Inferior", line=dict(color="lightblue"), fill="tonexty"))
+ax.fill_between(x[x < confidence_interval[0]], y[x < confidence_interval[0]], color="purple", alpha=0.4, label="2.5% Inferior")
+ax.fill_between(x[x > confidence_interval[1]], y[x > confidence_interval[1]], color="purple", alpha=0.4, label="2.5% Superior")
 
-# Configuração do gráfico
-fig.update_layout(title="📊 Intervalo de Confiança (95%) da Expectativa de Vida",
-                  xaxis_title="Ano", yaxis_title="Expectativa de Vida",
-                  showlegend=True)
+ax.axvline(confidence_interval[0], color="black", linestyle="dashed")
+ax.axvline(confidence_interval[1], color="black", linestyle="dashed")
 
-st.plotly_chart(fig)
+ax.set_title("Distribuição da Expectativa de Vida com Intervalo de Confiança de 95%", fontsize=14)
+ax.set_xlabel("Expectativa de Vida (anos)", fontsize=12)
+ax.set_ylabel("Densidade de Probabilidade", fontsize=12)
+ax.legend()
+
+st.pyplot(fig)
+
+st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
+st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
