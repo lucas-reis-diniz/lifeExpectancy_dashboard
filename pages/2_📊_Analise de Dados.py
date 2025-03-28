@@ -193,7 +193,7 @@ fig, ax = plt.subplots(figsize=(8, 5))
 ax.plot(x, y, color="black", linewidth=2, label="Distribuição Normal")
 
 x_confidence = np.linspace(confidence_interval[0], confidence_interval[1], 300)
-y_confidence = stats.norm.pdf(x_confidence, mean_life, std_life)
+y_confidence = norm.pdf(x_confidence, mean_life, std_life)
 ax.fill_between(x_confidence, y_confidence, color="blue", alpha=0.4, label="95% IC")
 
 ax.fill_between(x[x < confidence_interval[0]], y[x < confidence_interval[0]], color="purple", alpha=0.4, label="2.5% Inferior")
