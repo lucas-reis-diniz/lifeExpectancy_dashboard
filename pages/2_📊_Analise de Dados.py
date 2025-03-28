@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 from scipy.stats import stats
+from scipy.stats import t
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
@@ -183,7 +184,7 @@ std_life = np.std(life_expectancy, ddof=1)  # ddof=1 para amostra
 
 n = len(life_expectancy)
 sem = std_life / np.sqrt(n)  # Erro padrão da média
-confidence_interval = stats.t(df=n-1).interval(0.95, loc=mean_life, scale=sem)
+confidence_interval = t.interval(0.95, df=n-1, loc=mean_life, scale=sem)
 
 x = np.linspace(mean_life - 4*std_life, mean_life + 4*std_life, 1000)
 y = stats.norm.pdf(x, mean_life, std_life)
