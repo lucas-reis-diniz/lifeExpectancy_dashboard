@@ -41,6 +41,8 @@ fig = px.histogram(df, x="Life expectancy", nbins=30, title="Histograma da Expec
                    labels={"Life expectancy": "Expectativa de Vida"}, opacity=0.7, marginal="box")
 st.plotly_chart(fig)
 
+st.write("(Adicionar texto explicando os dados fora do padrão apresentado)")
+
 # Análise por país
 st.subheader("🌎 Evolução da Expectativa de Vida por País")
 country = st.selectbox("Selecione um país:", df["Country"].unique())
