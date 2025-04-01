@@ -189,25 +189,54 @@ confidence_interval = t.interval(0.95, df=n-1, loc=mean_life, scale=sem)
 x = np.linspace(mean_life - 4*std_life, mean_life + 4*std_life, 1000)
 y = norm.pdf(x, mean_life, std_life)
 
-sns.set_style("whitegrid")
-fig, ax = plt.subplots(figsize=(10, 6))
+# Criar figura com Plotly
+fig = go.Figure()
 
-ax.plot(x, y, color="#1f77b4", linewidth=2, label="Distribuição Normal")
+# Adicionar a curva da distribuição normal
+fig.add_trace(go.Scatter(
+    x=x, y=y, mode='lines', name='Distribuição Normal',
+    line=dict(color='#1f77b4', width=2)
+))
 
+# Adicionar a área do intervalo de confiança
 x_confidence = np.linspace(confidence_interval[0], confidence_interval[1], 300)
 y_confidence = norm.pdf(x_confidence, mean_life, std_life)
-ax.fill_between(x_confidence, y_confidence, color="#ff7f0e", alpha=0.5, label="95% IC")
+fig.add_trace(go.Scatter(
+    x=np.concatenate([x_confidence, x_confidence[::-1]]),
+    y=np.concatenate([y_confidence, np.zeros_like(y_confidence)]),
+    fill='toself', fillcolor='rgba(255, 127, 14, 0.5)',
+    line=dict(color='rgba(255,127,14,0)'),
+    name='95% IC'
+))
 
-ax.axvline(confidence_interval[0], color="red", linestyle="dashed", label="Limite Inferior 95%")
-ax.axvline(confidence_interval[1], color="red", linestyle="dashed", label="Limite Superior 95%")
+# Adicionar linhas tracejadas para os limites do IC
+fig.add_trace(go.Scatter(
+    x=[confidence_interval[0], confidence_interval[0]],
+    y=[0, norm.pdf(confidence_interval[0], mean_life, std_life)],
+    mode='lines', name='Limite Inferior 95%',
+    line=dict(color='red', dash='dash')
+))
 
-ax.set_title("Distribuição da Expectativa de Vida com Intervalo de Confiança de 95%", fontsize=14, fontweight='bold')
-ax.set_xlabel("Expectativa de Vida (anos)", fontsize=12)
-ax.set_ylabel("Densidade de Probabilidade", fontsize=12)
-ax.legend(fontsize=10)
-ax.grid(True, linestyle="--", alpha=0.5)
+fig.add_trace(go.Scatter(
+    x=[confidence_interval[1], confidence_interval[1]],
+    y=[0, norm.pdf(confidence_interval[1], mean_life, std_life)],
+    mode='lines', name='Limite Superior 95%',
+    line=dict(color='red', dash='dash')
+))
 
-st.pyplot(fig)
+# Configurações do layout
+fig.update_layout(
+    title="Distribuição da Expectativa de Vida com Intervalo de Confiança de 95%",
+    xaxis_title="Expectativa de Vida (anos)",
+    yaxis_title="Densidade de Probabilidade",
+    template="plotly_white",
+    legend=dict(x=0.7, y=1),
+    hovermode="x"
+)
 
+# Exibir gráfico no Streamlit
+st.plotly_chart(fig)
+
+# Exibir informações numéricas
 st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
 st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
