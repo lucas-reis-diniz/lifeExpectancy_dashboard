@@ -3,6 +3,7 @@ import pandas as pd
 import openai
 import os
 import time
+import re
 
 api_key = st.secrets.get("OPENROUTER_API_KEY", None)
 
@@ -55,6 +56,16 @@ def get_data_response(question):
     elif "relação entre pib e expectativa de vida" in question_lower:
         correlation = df["GDP"].corr(df["Life expectancy"])
         return f"A correlação entre **PIB** e **expectativa de vida** no dataset é **{correlation:.2f}**, indicando uma relação {'positiva' if correlation > 0 else 'negativa'}."
+
+    elif re.search(r"top\s*10.*expectativa de vida.*(\d{4})", question_lower):
+        match = re.search(r"(\d{4})", question_lower)  # Captura o ano na pergunta
+        if match:
+            year = int(match.group(1))
+            if year in df["Year"].unique():  # Verifica se o ano está no dataset
+                top_10_countries = df[df["Year"] == year].nlargest(10, "Life expectancy")[
+                    ["Country", "Life expectancy"]]
+                return f"Os 10 países com maior expectativa de vida em **{year}** são:\n\n" + top_10_countries.to_string(
+                    index=False)
 
     else:
         return None  # Se não encontrar nada no dataset, passa para a IA
