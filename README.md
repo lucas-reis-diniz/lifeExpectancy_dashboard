@@ -7,6 +7,8 @@ Este projeto é um dashboard interativo desenvolvido com Streamlit para explorar
 - 📊 **Visualização de Dados**: Gráficos interativos para análise de expectativa de vida por país, região e ano.
 - 📈 **Análises Estatísticas**: Cálculo de tendências e correlações entre expectativa de vida e variáveis socioeconômicas.
 - 🌍 **Mapa Interativo**: Representação geográfica da expectativa de vida global.
+- 🤖 **Chat Bot**: I.A que se comunica com o dataset, e tira qualquer duvida relacionada ao tema.
+
 
 ## 📂 Estrutura do Projeto
 
