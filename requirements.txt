@@ -10,3 +10,4 @@ matplotlib
 scipy
 python-dotenv
 openai
+imageio
