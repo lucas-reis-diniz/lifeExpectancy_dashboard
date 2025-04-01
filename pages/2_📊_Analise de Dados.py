@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import numpy as np
+import seaborn as sns
 from scipy.stats import stats
 from scipy.stats import norm, t
 import matplotlib.pyplot as plt
@@ -176,12 +177,11 @@ Isso nos ajuda a entender **a variação dos dados ao longo dos anos** e a fazer
 Neste caso, utilizamos um **intervalo de confiança de 95%**, ou seja, há **95% de chance da média real da expectativa de vida estar dentro desse intervalo**.  
 """)
 
-life_expectancy = df["Life expectancy"].dropna()  # Removendo valores NaN
+# Remover valores NaN
+life_expectancy = df["Life expectancy"].dropna()
 
-# Calcular média e desvio padrão
 mean_life = np.mean(life_expectancy)
 std_life = np.std(life_expectancy, ddof=1)  # ddof=1 para amostra
-
 n = len(life_expectancy)
 sem = std_life / np.sqrt(n)  # Erro padrão da média
 confidence_interval = t.interval(0.95, df=n-1, loc=mean_life, scale=sem)
@@ -189,23 +189,23 @@ confidence_interval = t.interval(0.95, df=n-1, loc=mean_life, scale=sem)
 x = np.linspace(mean_life - 4*std_life, mean_life + 4*std_life, 1000)
 y = norm.pdf(x, mean_life, std_life)
 
-fig, ax = plt.subplots(figsize=(8, 5))
-ax.plot(x, y, color="black", linewidth=2, label="Distribuição Normal")
+sns.set_style("whitegrid")
+fig, ax = plt.subplots(figsize=(10, 6))
+
+ax.plot(x, y, color="#1f77b4", linewidth=2, label="Distribuição Normal")
 
 x_confidence = np.linspace(confidence_interval[0], confidence_interval[1], 300)
 y_confidence = norm.pdf(x_confidence, mean_life, std_life)
-ax.fill_between(x_confidence, y_confidence, color="blue", alpha=0.4, label="95% IC")
+ax.fill_between(x_confidence, y_confidence, color="#ff7f0e", alpha=0.5, label="95% IC")
 
-ax.fill_between(x[x < confidence_interval[0]], y[x < confidence_interval[0]], color="purple", alpha=0.4, label="2.5% Inferior")
-ax.fill_between(x[x > confidence_interval[1]], y[x > confidence_interval[1]], color="purple", alpha=0.4, label="2.5% Superior")
+ax.axvline(confidence_interval[0], color="red", linestyle="dashed", label="Limite Inferior 95%")
+ax.axvline(confidence_interval[1], color="red", linestyle="dashed", label="Limite Superior 95%")
 
-ax.axvline(confidence_interval[0], color="black", linestyle="dashed")
-ax.axvline(confidence_interval[1], color="black", linestyle="dashed")
-
-ax.set_title("Distribuição da Expectativa de Vida com Intervalo de Confiança de 95%", fontsize=14)
+ax.set_title("Distribuição da Expectativa de Vida com Intervalo de Confiança de 95%", fontsize=14, fontweight='bold')
 ax.set_xlabel("Expectativa de Vida (anos)", fontsize=12)
 ax.set_ylabel("Densidade de Probabilidade", fontsize=12)
-ax.legend()
+ax.legend(fontsize=10)
+ax.grid(True, linestyle="--", alpha=0.5)
 
 st.pyplot(fig)
 
