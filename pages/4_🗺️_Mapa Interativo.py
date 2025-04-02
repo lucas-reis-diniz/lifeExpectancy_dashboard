@@ -51,7 +51,7 @@ if generate_gif:
         gif_frames.append(imageio.imread(file_path))
 
     gif_path = "life_expectancy_timelapse.gif"
-    imageio.mimsave(gif_path, gif_frames, duration=0.5)  # Criar GIF
+    imageio.mimsave(gif_path, gif_frames, duration=1)  # Criar GIF
 
     st.image(gif_path, caption="Timelapse da Expectativa de Vida", use_container_width=True)
 
