@@ -12,9 +12,9 @@ st.set_page_config(page_title="Análise Exploratória", layout="wide")
 st.title("🌍 Análise Exploratória dos Dados")
 
 # Introdução
-st.markdown("""
+st.write("""
 ### 📊 Explore os Dados!
-            Nessa página você poderá explorar todos os dados obtidos através do nosso banco de dados. Selecione países e categorias de sua escolha para fazer a análise!
+Nessa página você poderá explorar todos os dados obtidos através do nosso banco de dados. Selecione países e categorias de sua escolha para fazer a análise!
 """)
 
 # Carregamento de dados

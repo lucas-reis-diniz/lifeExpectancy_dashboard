@@ -17,6 +17,12 @@ st.markdown("""
 Este projeto explora a **expectativa de vida mundial**, investigando fatores socioeconômicos, de saúde e políticas públicas que impactam a longevidade. A análise é baseada em dados históricos e busca responder perguntas relevantes sobre os padrões globais.
 """)
 
+st.write("Selecionamos duas perguntas principais para direcionar a analise de dados e assim obter conclusões mais objetivas sobre as informações.")
+
+st.markdown("### Quais regiões têm os menores e maiores índices de longevidade em 2015?")
+st.markdown("*dados mais recentes*")
+
+
 # Carregamento de dados
 @st.cache_data
 def load_data():
@@ -25,12 +31,93 @@ def load_data():
 
 df = load_data()
 
-# Estatísticas descritivas
-st.subheader("📋 Resumo Estatístico")
-st.markdown("""
-Aqui estão algumas estatísticas descritivas sobre os dados, como média, desvio padrão e distribuição geral.
+
+def process_data(df):
+
+    df_2015 = df[df['Year'] == 2015]
+    # Selecionar colunas relevantes
+    selected_df = df_2015[['Country', 'Year', 'Life expectancy', 'Adult Mortality', 'infant deaths', 'Population']]
+    
+    # Agrupar por país e tirar média
+    grouped_df = selected_df.groupby('Country', as_index=False).mean()
+    
+    # Selecionar os 10 países com maior e menor expectativa de vida
+    top_long_life = grouped_df.nlargest(10, 'Life expectancy')
+    bottom_long_life = grouped_df.nsmallest(10, 'Life expectancy')
+    
+    # Concatenar os dois DataFrames
+    final_df = pd.concat([top_long_life, bottom_long_life]).reset_index(drop=True)
+    
+    return final_df
+
+processed_df = process_data(df)
+st.dataframe(processed_df)  # Exibe as primeiras linhas da tabela processada
+
+
+def calculate_general_averages(df):
+    # Selecionar apenas as colunas relevantes
+    selected_df = df[['Life expectancy', 'Adult Mortality', 'infant deaths']]
+
+    # Calcular média ignorando valores ausentes
+    averages = selected_df.mean(numeric_only=True)
+
+    # Renomear para visualização
+    averages_df = averages.reset_index()
+    averages_df.columns = ['Indicador', 'Média Geral']
+    
+    return averages_df
+
+def show_general_averages():
+    df = load_data()
+    avg_df = calculate_general_averages(df)
+    st.subheader("📊 Média Geral de Expectativa de Vida e Mortalidades (Todos os Anos e Países)")
+    st.dataframe(avg_df)
+
+# Chamar no app
+show_general_averages()
+
+st.write("""Ao analisarmos os dados de 2015, ficou claro que os países com maior expectativa de vida estavam principalmente na Europa e Ásia desenvolvida — como Japão, Suíça e Suécia —, onde as pessoas viviam, em média, mais de 82 anos. Já os países com menor longevidade, como Serra Leoa, Chade e Angola, estavam concentrados na África Subsaariana, com expectativa de vida abaixo dos 55 anos.
+
+Essas diferenças mostram como o acesso à saúde, saneamento e qualidade de vida faz toda a diferença. Onde há mais estrutura, as pessoas vivem mais. Onde faltam recursos básicos, os desafios ainda são enormes para garantir uma vida longa e saudável.
+
 """)
-st.write(df.describe())
+
+st.markdown("### Qual é a relação entre vacinação e longevidade?")
+
+def get_top_bottom_life_expectancy(df):
+    # Filtrar apenas o ano de 2015
+    df_2015 = df[df['Year'] == 2015]
+
+    # Selecionar colunas relevantes
+    columns = [
+        'Country', 'Life expectancy', 'Adult Mortality', 'infant deaths', 'Population',
+        'Hepatitis B', 'Polio', 'Diphtheria', 'Measles', 'HIV/AIDS'
+    ]
+    filtered_df = df_2015[columns]
+
+    # Agrupar por país e tirar média (caso haja duplicatas)
+    grouped = filtered_df.groupby('Country', as_index=False).mean(numeric_only=True)
+
+    # Top 5 maiores e menores expectativa de vida
+    top5 = grouped.nlargest(5, 'Life expectancy').reset_index(drop=True)
+    bottom5 = grouped.nsmallest(5, 'Life expectancy').reset_index(drop=True)
+
+    return top5, bottom5
+
+def show_vaccination_life_expectancy():
+    st.subheader("🧬 Vacinação e Longevidade em 2015")
+
+    df = load_data()
+    top5, bottom5 = get_top_bottom_life_expectancy(df)
+
+    st.subheader("Top 5 Países com Maior Expectativa de Vida")
+    st.dataframe(top5)
+
+    st.subheader("Bottom 5 Países com Menor Expectativa de Vida")
+    st.dataframe(bottom5)
+
+# Executar no app
+show_vaccination_life_expectancy()
 
 # Distribuição da Expectativa de Vida
 st.subheader("📊 Distribuição da Expectativa de Vida")
