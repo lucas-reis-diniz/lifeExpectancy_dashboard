@@ -143,9 +143,9 @@ def show_country_confidence_intervals(df):
         template="plotly_white"
     )
 
-    st.plotly_chart(fig)
-    st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
-    st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
+st.plotly_chart(fig)
+st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
+st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
 
 # Exibe intervalo se selecionado
 if "Intervalos de Confiança por País (2015)" in options:
