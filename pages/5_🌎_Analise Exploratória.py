@@ -52,7 +52,12 @@ Selecione abaixo as relações que deseja investigar.
 """)
 options = st.multiselect(
     "Escolha as análises:",
-    ["Correlação entre PIB e Expectativa de Vida", "Impacto da Vacinação na Expectativa de Vida", "Distribuição de Doenças por Região"]
+    [
+        "Correlação entre PIB e Expectativa de Vida",
+        "Impacto da Vacinação na Expectativa de Vida",
+        "Distribuição de Doenças por Região",
+        "Intervalos de Confiança por País (2015)"
+    ]
 )
 
 if "Correlação entre PIB e Expectativa de Vida" in options:
@@ -142,5 +147,6 @@ def show_country_confidence_intervals(df):
     st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
     st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
 
-# Executa a visualização final
-show_country_confidence_intervals(df)
+# Exibe intervalo se selecionado
+if "Intervalos de Confiança por País (2015)" in options:
+    show_country_confidence_intervals(df)
