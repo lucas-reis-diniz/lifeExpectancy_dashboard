@@ -92,11 +92,6 @@ if "Distribuição de Doenças por Região" in options:
     st.plotly_chart(fig)
 
 # Intervalo de Confiança
-st.subheader("📏 Intervalo de Confiança da Expectativa de Vida")
-st.markdown("""
-Utilizamos um intervalo de confiança de 95% para estimar onde a verdadeira média da expectativa de vida global se encontra. Isso ajuda a compreender a variabilidade entre os países.
-""")
-# Gráfico de barras com intervalo de confiança para países selecionados
 def show_country_confidence_intervals(df):
     st.subheader("📊 Intervalos de Confiança da Expectativa de Vida por País (2015)")
 
@@ -144,12 +139,8 @@ def show_country_confidence_intervals(df):
     )
 
     st.plotly_chart(fig)
+    st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
+    st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
 
-    return mean_life, confidence_interval
-
-
-mean_life, confidence_interval = show_country_confidence_intervals(df)
-
-st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
-st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
-
+# Executa a visualização final
+show_country_confidence_intervals(df)
