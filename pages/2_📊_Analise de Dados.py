@@ -80,54 +80,61 @@ show_vaccination_life_expectancy()
 
 # Intervalo de Confiança
 def show_country_confidence_intervals(df):
-    st.subheader("📊 Intervalos de Confiança da Expectativa de Vida por País (2015)")
+    st.subheader("📊 Intervalos de Confiança da Expectativa de Vida por País (Ano Inicial vs Final)")
 
-    df_2015 = df[df['Year'] == 2015]
-    mean_life = df_2015["Life expectancy"].mean()
-    std_life = df_2015["Life expectancy"].std()
-    n = df_2015["Life expectancy"].count()
-    sem = std_life / np.sqrt(n)
-    confidence_interval = t.interval(0.95, df=n - 1, loc=mean_life, scale=sem)
+    country_stats = []
+    for country, group in df.groupby('Country'):
+        group = group.sort_values('Year')
+        if len(group) >= 2:
+            first_year = group.iloc[0]
+            last_year = group.iloc[-1]
+            values = [first_year['Life expectancy'], last_year['Life expectancy']]
+            mean = np.mean(values)
+            std = np.std(values, ddof=1)
+            n = 2
+            sem = std / np.sqrt(n)
+            ci = t.interval(0.95, df=n - 1, loc=mean, scale=sem)
+            country_stats.append({
+                'Country': country,
+                'Start Year': int(first_year['Year']),
+                'End Year': int(last_year['Year']),
+                'Start Life': first_year['Life expectancy'],
+                'End Life': last_year['Life expectancy'],
+                'Mean': mean,
+                'CI Lower': ci[0],
+                'CI Upper': ci[1]
+            })
 
-    stats = df_2015.groupby('Country')['Life expectancy'].agg(['mean', 'std', 'count']).reset_index()
-    stats['sem'] = stats['std'] / np.sqrt(stats['count'])
-    stats['ci_lower'], stats['ci_upper'] = t.interval(0.95, df=stats['count'] - 1,
-                                                      loc=stats['mean'], scale=stats['sem'])
+    stats_df = pd.DataFrame(country_stats).dropna()
 
-    mean_global = mean_life
+    # Ordena pelos países com maior diferença entre começo e fim
+    stats_df['Delta'] = stats_df['End Life'] - stats_df['Start Life']
+    stats_df = stats_df.sort_values(by='Delta', ascending=False)
 
     fig = go.Figure()
-    colors = ['crimson' if (l > mean_global or u < mean_global) else '#1f77b4'
-              for l, u in zip(stats['ci_lower'], stats['ci_upper'])]
 
-    fig.add_trace(go.Scatter(
-        x=stats['Country'],
-        y=stats['mean'],
-        mode='markers',
-        marker=dict(color=colors, size=10),
-        error_y=dict(
-            type='data',
-            symmetric=False,
-            array=stats['ci_upper'] - stats['mean'],
-            arrayminus=stats['mean'] - stats['ci_lower'],
-            thickness=1.5,
-            width=3
-        )
-    ))
-
-    fig.add_hline(y=mean_global, line_dash="dash", line_color="black",
-                  annotation_text="Média Global", annotation_position="top left")
+    for i, row in stats_df.iterrows():
+        fig.add_trace(go.Scatter(
+            x=[row['Country'], row['Country']],
+            y=[row['Start Life'], row['End Life']],
+            mode='lines+markers',
+            marker=dict(size=10),
+            name=row['Country'],
+            showlegend=False,
+            line=dict(color='green' if row['Delta'] >= 0 else 'red')
+        ))
 
     fig.update_layout(
-        yaxis_title="Expectativa de Vida (anos)",
+        title="Mudança na Expectativa de Vida e Intervalo de Confiança (por País)",
         xaxis_title="Países",
-        title="Intervalos de Confiança (95%) da Expectativa de Vida por País",
+        yaxis_title="Expectativa de Vida (anos)",
         template="plotly_white"
     )
 
     st.plotly_chart(fig)
-    st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
-    st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
+
+    st.dataframe(stats_df[['Country', 'Start Year', 'End Year', 'Start Life', 'End Life', 'CI Lower', 'CI Upper']])
+
 
 show_country_confidence_intervals(df)
 
