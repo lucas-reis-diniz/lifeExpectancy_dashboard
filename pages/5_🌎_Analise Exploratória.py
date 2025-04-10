@@ -109,9 +109,10 @@ def show_country_confidence_intervals(df):
 
     stats = df_2015.groupby('Country')['Life expectancy'].agg(['mean', 'std', 'count']).reset_index()
     stats['sem'] = stats['std'] / np.sqrt(stats['count'])
-    stats['ci_lower'], stats['ci_upper'] = t.interval(0.95, df=stats['count']-1, loc=stats['mean'], scale=stats['sem'])
+    stats['ci_lower'], stats['ci_upper'] = t.interval(0.95, df=stats['count'] - 1,
+                                                      loc=stats['mean'], scale=stats['sem'])
 
-    mean_global = df_2015['Life expectancy'].mean()
+    mean_global = mean_life
 
     fig = go.Figure()
     colors = ['crimson' if (l > mean_global or u < mean_global) else '#1f77b4'
@@ -144,7 +145,11 @@ def show_country_confidence_intervals(df):
 
     st.plotly_chart(fig)
 
-show_country_confidence_intervals(df)
+    return mean_life, confidence_interval
+
+
+mean_life, confidence_interval = show_country_confidence_intervals(df)
 
 st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
 st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
+
