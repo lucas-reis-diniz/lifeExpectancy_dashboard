@@ -79,28 +79,51 @@ Já países com **baixa longevidade** geralmente têm **índices vacinais abaixo
 show_vaccination_life_expectancy()
 
 # Intervalo de Confiança
-def show_confidence_interval(df):
-    st.subheader("📏 Intervalo de Confiança da Expectativa de Vida")
-    st.markdown("""
-Para reforçar nossa análise estatística, calculamos o **intervalo de confiança de 95%** da média global de expectativa de vida:
-""")
-    life_expectancy = df["Life expectancy"].dropna()
-    mean_life = np.mean(life_expectancy)
-    std_life = np.std(life_expectancy, ddof=1)
-    n = len(life_expectancy)
+def show_country_confidence_intervals(df):
+    st.subheader("📊 Intervalos de Confiança da Expectativa de Vida por País (2015)")
+
+    df_2015 = df[df['Year'] == 2015]
+    mean_life = df_2015["Life expectancy"].mean()
+    std_life = df_2015["Life expectancy"].std()
+    n = df_2015["Life expectancy"].count()
     sem = std_life / np.sqrt(n)
-    confidence_interval = t.interval(0.95, df=n-1, loc=mean_life, scale=sem)
+    confidence_interval = t.interval(0.95, df=n - 1, loc=mean_life, scale=sem)
+
+    stats = df_2015.groupby('Country')['Life expectancy'].agg(['mean', 'std', 'count']).reset_index()
+    stats['sem'] = stats['std'] / np.sqrt(stats['count'])
+    stats['ci_lower'], stats['ci_upper'] = t.interval(0.95, df=stats['count'] - 1,
+                                                      loc=stats['mean'], scale=stats['sem'])
+
+    mean_global = mean_life
 
     fig = go.Figure()
-    x = np.linspace(mean_life - 4*std_life, mean_life + 4*std_life, 1000)
-    y = norm.pdf(x, mean_life, std_life)
-    fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Distribuição Normal', line=dict(color='#1f77b4', width=2)))
-    fig.add_trace(go.Scatter(x=[confidence_interval[0], confidence_interval[1]],
-                              y=[0, 0], mode='lines', name='Intervalo de Confiança', line=dict(color='red', dash='dash')))
-    fig.update_layout(title="Distribuição da Expectativa de Vida com Intervalo de Confiança de 95%",
-                      xaxis_title="Expectativa de Vida (anos)", yaxis_title="Densidade de Probabilidade",
-                      template="plotly_white")
-    st.plotly_chart(fig)
+    colors = ['crimson' if (l > mean_global or u < mean_global) else '#1f77b4'
+              for l, u in zip(stats['ci_lower'], stats['ci_upper'])]
+
+    fig.add_trace(go.Scatter(
+        x=stats['Country'],
+        y=stats['mean'],
+        mode='markers',
+        marker=dict(color=colors, size=10),
+        error_y=dict(
+            type='data',
+            symmetric=False,
+            array=stats['ci_upper'] - stats['mean'],
+            arrayminus=stats['mean'] - stats['ci_lower'],
+            thickness=1.5,
+            width=3
+        )
+    ))
+
+    fig.add_hline(y=mean_global, line_dash="dash", line_color="black",
+                  annotation_text="Média Global", annotation_position="top left")
+
+    fig.update_layout(
+        yaxis_title="Expectativa de Vida (anos)",
+        xaxis_title="Países",
+        title="Intervalos de Confiança (95%) da Expectativa de Vida por País",
+        template="plotly_white"
+    )
 
     st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
     st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
