@@ -12,9 +12,11 @@ st.set_page_config(page_title="Análise Exploratória", layout="wide")
 st.title("🌍 Análise Exploratória dos Dados")
 
 # Introdução
-st.write("""
+st.markdown("""
 ### 📊 Explore os Dados!
-Nessa página você poderá explorar todos os dados obtidos através do nosso banco de dados. Selecione países e categorias de sua escolha para fazer a análise!
+Nesta página você pode explorar os dados de forma mais aberta e global, observando distribuições gerais e relações entre variáveis ao longo do tempo.
+
+A expectativa de vida é um dos indicadores mais importantes para medir o bem-estar de uma população. Através da visualização dos dados, podemos identificar padrões globais, anomalias e relações com variáveis como PIB, vacinação e mortalidade.
 """)
 
 # Carregamento de dados
@@ -28,13 +30,11 @@ df = load_data()
 # Distribuição da Expectativa de Vida
 st.subheader("📊 Distribuição da Expectativa de Vida")
 st.markdown("""
-Este gráfico mostra como a expectativa de vida está distribuída globalmente.
+Este gráfico mostra como a expectativa de vida está distribuída globalmente. Podem ser observadas concentrações, caudas ou valores atípicos que indicam diferenças sociais e econômicas entre os países.
 """)
 fig = px.histogram(df, x="Life expectancy", nbins=30, title="Histograma da Expectativa de Vida",
                    labels={"Life expectancy": "Expectativa de Vida"}, opacity=0.7, marginal="box")
 st.plotly_chart(fig)
-
-st.write("(Adicionar texto explicando os dados fora do padrão apresentado)")
 
 # Análise por país
 st.subheader("🌎 Evolução da Expectativa de Vida por País")
@@ -45,10 +45,10 @@ fig = px.line(df_country, x="Year", y="Life expectancy", markers=True,
               labels={"Life expectancy": "Expectativa de Vida", "Year": "Anos"})
 st.plotly_chart(fig)
 
-# Seleção de análise personalizada
+# Análise Personalizada
 st.subheader("📌 Análises Relacionadas")
 st.markdown("""
-Selecione abaixo as perguntas que deseja responder com os dados.
+Selecione abaixo as relações que deseja investigar.
 """)
 options = st.multiselect(
     "Escolha as análises:",
@@ -58,7 +58,7 @@ options = st.multiselect(
 if "Correlação entre PIB e Expectativa de Vida" in options:
     st.subheader("💰 Expectativa de Vida vs. PIB")
     st.markdown("""
-    Aqui exploramos a relação entre o Produto Interno Bruto (PIB) e a expectativa de vida. A tendência geralmente mostra que países com maior PIB têm uma população com maior longevidade.
+    Países com maior PIB per capita tendem a apresentar maior expectativa de vida. Isso pode estar ligado ao maior investimento em saúde, educação e saneamento.
     """)
     fig = px.scatter(df, x="GDP", y="Life expectancy", trendline="ols",
                      title="Relação entre PIB e Expectativa de Vida",
@@ -69,7 +69,7 @@ if "Impacto da Vacinação na Expectativa de Vida" in options:
     st.subheader("💉 Impacto da Vacinação na Expectativa de Vida")
     vaccine = st.selectbox("Escolha uma vacina:", ["Hepatitis B", "Polio", "Diphtheria"])
     st.markdown(f"""
-    Analisamos como a vacinação contra {vaccine} influencia a expectativa de vida. Países com altas taxas de vacinação geralmente apresentam melhores índices de longevidade.
+    Esta análise mostra como a cobertura vacinal de {vaccine} está relacionada à expectativa de vida dos países.
     """)
     fig = px.scatter(df, x=vaccine, y="Life expectancy", trendline="ols",
                      title=f"Relação entre {vaccine} e Expectativa de Vida",
@@ -80,7 +80,7 @@ if "Distribuição de Doenças por Região" in options:
     st.subheader("🦠 Distribuição de Doenças por Região")
     disease = st.selectbox("Selecione uma doença:", ["Hepatitis B", "Measles ", "Polio", "Diphtheria ", "HIV/AIDS", "infant deaths", "under-five deaths "])
     st.markdown(f"""
-    A análise abaixo mostra a distribuição da doença **{disease}** em diferentes países ao longo dos anos.
+    A visualização abaixo mostra a distribuição da doença **{disease}** ao longo dos anos.
     """)
     fig = px.choropleth(
         df.dropna(subset=["Country", disease]),
@@ -94,7 +94,7 @@ if "Distribuição de Doenças por Região" in options:
 # Intervalo de Confiança
 st.subheader("📏 Intervalo de Confiança da Expectativa de Vida")
 st.markdown("""
-Utilizamos um intervalo de confiança de 95% para estimar onde a verdadeira média da expectativa de vida se encontra.
+Utilizamos um intervalo de confiança de 95% para estimar onde a verdadeira média da expectativa de vida global se encontra. Isso ajuda a compreender a variabilidade entre os países.
 """)
 life_expectancy = df["Life expectancy"].dropna()
 mean_life = np.mean(life_expectancy)
@@ -116,5 +116,3 @@ st.plotly_chart(fig)
 
 st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
 st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
-
-st.write("Caculo para o intervalo de confiança com 95% de certeza com base nos dados")
