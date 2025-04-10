@@ -101,8 +101,11 @@ def show_country_confidence_intervals(df):
     st.subheader("📊 Intervalos de Confiança da Expectativa de Vida por País (2015)")
 
     df_2015 = df[df['Year'] == 2015]
-    countries = df_2015['Country'].value_counts().index[:20]  # 20 países mais frequentes
-    df_filtered = df_2015[df_2015['Country'].isin(countries)]
+    mean_life = df_2015["Life expectancy"].mean()
+    std_life = df_2015["Life expectancy"].std()
+    n = df_2015["Life expectancy"].count()
+    sem = std_life / np.sqrt(n)
+    confidence_interval = t.interval(0.95, df=n - 1, loc=mean_life, scale=sem)
 
     stats = df_filtered.groupby('Country')['Life expectancy'].agg(['mean', 'std', 'count']).reset_index()
     stats['sem'] = stats['std'] / np.sqrt(stats['count'])
