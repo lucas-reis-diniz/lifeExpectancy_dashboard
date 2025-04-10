@@ -107,7 +107,7 @@ def show_country_confidence_intervals(df):
     sem = std_life / np.sqrt(n)
     confidence_interval = t.interval(0.95, df=n - 1, loc=mean_life, scale=sem)
 
-    stats = df_filtered.groupby('Country')['Life expectancy'].agg(['mean', 'std', 'count']).reset_index()
+    stats = df_2015.groupby('Country')['Life expectancy'].agg(['mean', 'std', 'count']).reset_index()
     stats['sem'] = stats['std'] / np.sqrt(stats['count'])
     stats['ci_lower'], stats['ci_upper'] = t.interval(0.95, df=stats['count']-1, loc=stats['mean'], scale=stats['sem'])
 
