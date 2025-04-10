@@ -125,10 +125,11 @@ def show_country_confidence_intervals(df):
         template="plotly_white"
     )
 
+    st.plotly_chart(fig)
     st.write(f"**Média da Expectativa de Vida:** {mean_life:.2f} anos")
     st.write(f"**Intervalo de Confiança de 95%:** [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}] anos")
 
-show_confidence_interval(df)
+show_country_confidence_intervals(df)
 
 # Finalização
 st.markdown("""
