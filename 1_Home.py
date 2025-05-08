@@ -21,7 +21,7 @@ st.subheader("🎯 Objetivos do Dashboard")
 st.markdown("""
 Neste dashboard, você poderá:
 - 📈 **Analisar a evolução da expectativa de vida ao longo dos anos** em diferentes países.  
-- 🏥 **Investigar o impacto de doenças, vacinação e mortalidade infantil** na longevidade.  
+- 🏥 **Investigar o impacto de doenças e vacinação** na longevidade.  
 - 💰 **Explorar a relação entre fatores econômicos (PIB) e a expectativa de vida**.  
 - 🌎 **Comparar regiões e identificar padrões globais e desigualdades**.  
 """)
