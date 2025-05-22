@@ -49,9 +49,9 @@ st.write(f"**p-valor do coeficiente do PIB:** {model.pvalues[1]:.4f}")
 # Interpretação
 st.subheader("🧠 Interpretação")
 st.markdown(f"""
-- O coeficiente positivo de {model.params[1]:.4f} indica que, em média, países com **PIB mais alto tendem a ter maior expectativa de vida**.
-- O R² de **{model.rsquared:.3f}** indica que o modelo explica aproximadamente {model.rsquared * 100:.1f}% da variabilidade na expectativa de vida.
-- O p-valor de **{model.pvalues[1]:.4f}** {'indica significância estatística' if model.pvalues[1] < 0.05 else 'não indica significância estatística'} para a variável PIB.
+- O número positivo de {model.params[1]:.4f} mostra que, de forma geral, países com um PIB (Produto Interno Bruto) mais alto costumam ter uma expectativa de vida maior.
+- O valor de R² é {model.rsquared:.3f}, o que quer dizer que o modelo consegue explicar cerca de {model.rsquared * 100:.1f}% das diferenças na expectativa de vida entre os países.
+- O p-valor é {model.pvalues[1]:.4f}, o que {'mostra que a relação entre PIB e expectativa de vida é estatisticamente confiável' if model.pvalues[1] < 0.05 else 'indica que a relação pode ser apenas coincidência'}.
 
 Esta análise reforça como aspectos econômicos estão associados à saúde populacional.
 """)
