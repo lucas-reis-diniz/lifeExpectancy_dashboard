@@ -12,6 +12,4 @@ python-dotenv
 openai
 imageio
 kaleido
-plotly.express
-statsmodels.api
 statsmodels
