@@ -36,7 +36,7 @@ fig = px.scatter(df_year, x="GDP", y="Life expectancy",
                  labels={"GDP": "PIB", "Life expectancy": "Expectativa de Vida"},
                  title=f"Relação entre PIB e Expectativa de Vida em {year}")
 
-fig.add_traces(px.line(x=df_year["GDP"], y=predictions, name="Regressão Linear").data)
+fig.add_traces(px.line(x=df_year["GDP"], y=predictions).data)
 
 st.plotly_chart(fig)
 
